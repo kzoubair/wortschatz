@@ -7,6 +7,13 @@ Moteur de répétition espacée façon Anki, habillage et récompenses d'un jeu,
 - Chaque entrée : mot allemand avec article et genre (pluriel pour les noms), niveau, thème, nature, deux phrases d'exemple en allemand en contexte hospitalier.
 - HTML + CSS + JavaScript, sans framework, sans dépendance, sans compte, sans clé API.
 
+## Réglages principaux
+
+- **Langue de l'interface** : français ou allemand (la face « question » des cartes reste en français).
+- **Apparence** : système, sombre (par défaut) ou clair.
+- **Mode de réponse** : *carte à retourner* (par défaut : on touche la carte pour voir l'allemand et les exemples, puis on s'auto-évalue) ou *QCM et saisie* (le moteur choisit QCM pour les cartes neuves, saisie écrite ensuite).
+- **Mode Shuffle** : nouvelles cartes dans un ordre aléatoire, tous thèmes actifs confondus (B1 avant B2 avant C1).
+
 ## Lancer l'app en local
 
 Le service worker exige `http://localhost` (ou HTTPS) : n'ouvrez pas `index.html` par double-clic.
@@ -54,6 +61,7 @@ La progression est stockée dans `localStorage`, indépendamment du cache : une 
 | `js/answer.js` | Correction des réponses écrites (tolérances, une lettre d'écart, diff lettre à lettre) |
 | `js/store.js` | Progression en `localStorage`, format versionné, export/import |
 | `js/sound.js` | Sons synthétisés avec Web Audio (aucun fichier audio) |
+| `js/i18n.js` | Textes de l'interface en français et en allemand |
 | `js/app.js` | Interface : sessions, combos, niveaux, série, collection, sprint, paramètres |
 | `service-worker.js` | Cache complet à l'installation, stratégie cache-first, nettoyage des anciens caches |
 | `fonts/`, `icons/` | Polices Inter et Space Grotesk servies en local, icônes de l'app |
@@ -65,12 +73,12 @@ La progression est stockée dans `localStorage`, indépendamment du cache : une 
 - Révision : Difficile ×1,2, Correct ×facilité, Facile ×facilité×1,3 ; variation aléatoire ±5 %.
 - Encore sur une carte en révision : réapprentissage à 10 min, prochain intervalle = moitié de l'ancien (minimum 1 jour).
 - Plafonds par défaut : 30 neuves et 300 révisions par jour ; carte signalée comme problématique après 8 échecs.
-- Format choisi par le moteur : QCM pour les cartes neuves (distracteurs du même thème et de la même nature), saisie écrite ensuite, rappel renforcé sans indice au-delà de 21 jours.
+- En mode *QCM et saisie*, format choisi par le moteur : QCM pour les cartes neuves (distracteurs du même thème et de la même nature), saisie écrite ensuite, rappel renforcé sans indice au-delà de 21 jours.
 - Le mode Sprint (60 s, QCM) ne modifie jamais les intervalles : il rapporte uniquement des points.
 
 ## Clavier
 
-`1`–`4` : choix du QCM puis notation · `Espace` : retourner la carte / « je ne sais pas » · `Entrée` : valider ou appliquer la note suggérée · `Échap` : terminer · `Alt+A/O/U/S` : ä ö ü ß (la saisie `ae oe ue ss` est aussi acceptée).
+`Espace` / `Entrée` ou toucher la carte : retourner la carte · `1`–`4` : notation (et choix du QCM) · `Entrée` : valider ou appliquer la note suggérée · `Échap` : terminer · `Alt+A/O/U/S` : ä ö ü ß (la saisie `ae oe ue ss` est aussi acceptée).
 
 ## Licences
 

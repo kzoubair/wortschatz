@@ -175,12 +175,14 @@
     });
     return out;
   }
-  function formatDelay(p) {
-    if (p.minutes !== undefined) return p.minutes < 60 ? p.minutes + ' min' : Math.round(p.minutes / 60) + ' h';
+  function formatDelay(p, u) {
+    u = u || { min: 'min', h: 'h', d: 'j', mo: 'mois', y: 'an' };
+    const dec = function (x) { return x.toFixed(1).replace('.', ',').replace(',0', ''); };
+    if (p.minutes !== undefined) return p.minutes < 60 ? p.minutes + ' ' + u.min : Math.round(p.minutes / 60) + ' ' + u.h;
     const d = p.days;
-    if (d < 30) return d + ' j';
-    if (d < 365) return (d / 30).toFixed(1).replace('.', ',').replace(',0', '') + ' mois';
-    return (d / 365).toFixed(1).replace('.', ',').replace(',0', '') + ' an';
+    if (d < 30) return d + ' ' + u.d;
+    if (d < 365) return dec(d / 30) + ' ' + u.mo;
+    return dec(d / 365) + ' ' + u.y;
   }
 
   /* ---------- Format de question choisi par le moteur ---------- */

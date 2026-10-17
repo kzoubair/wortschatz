@@ -21,7 +21,12 @@
     reviewsPerDay: 300,
     requireArticle: true,
     sound: true,
-    reduceMotion: false
+    reduceMotion: false,
+    uiLang: 'fr',                   // langue de l'interface : 'fr' | 'de'
+    appearance: 'dark',             // 'system' | 'dark' | 'light'
+    answerMode: 'flip',             // 'flip' (carte à retourner) | 'engine' (QCM puis saisie)
+    shuffle: false,                 // nouvelles cartes mélangées entre thèmes
+    shuffleSeed: 1
   };
 
   function blank() {

@@ -482,6 +482,7 @@
     $('#card-level').textContent = $('#back-level').textContent = e.niveau;
     $('#card-theme').textContent = $('#back-theme').textContent = themeName(e.theme);
     $('#card-mode').textContent = t(MODE_KEY[S.format]);
+    $('#card-mode').hidden = flip;   // pas de badge de mode pour la carte à retourner
     $('#card-fr').textContent = e.fr;
     $('#card-nature').textContent = natureLabel(e.nature);
     $('#card-hint').textContent = S.format === 'ecrit' ? typingHint(e) : S.format === 'ecrit-renforce' ? t('noHint') : '';

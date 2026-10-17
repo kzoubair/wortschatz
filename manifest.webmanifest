@@ -1,0 +1,22 @@
+{
+  "name": "Wortschatz Klinik — allemand médical B1-C1",
+  "short_name": "Wortschatz",
+  "description": "Vocabulaire allemand B1 à C1 pour médecins francophones : répétition espacée, combos, collection par thème. Fonctionne entièrement hors ligne.",
+  "lang": "fr",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0E1116",
+  "background_color": "#0E1116",
+  "categories": ["education", "medical"],
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "./icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

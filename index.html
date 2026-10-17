@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wortschatz Klinik</title>
+  <meta name="description" content="Vocabulaire allemand B1–C1 pour médecins : répétition espacée, combos et collection, 100 % hors ligne.">
+
+  <!-- PWA : manifest, couleurs, icônes (chemins relatifs uniquement) -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#0E1116">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Wortschatz">
+
+  <!-- Polices servies en local -->
+  <link rel="preload" href="./fonts/space-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+<body>
+  <div class="pulse-layer" aria-hidden="true"></div>
+
+  <main id="app">
+
+    <!-- ================= ACCUEIL ================= -->
+    <section id="home" class="screen" aria-labelledby="home-title">
+      <header class="topbar">
+        <h1 id="home-title" class="brand">Wortschatz<span>Klinik</span></h1>
+        <div class="topbar-actions">
+          <button class="icon-btn" id="btn-sound" aria-label="Couper le son" title="Son (M)"></button>
+          <button class="icon-btn" id="btn-settings" aria-label="Paramètres" title="Paramètres">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="level-strip">
+        <span class="level-badge num" id="home-level">Niv. 1</span>
+        <div class="xpbar" aria-hidden="true"><i id="home-xpfill"></i></div>
+        <span class="xp-text num" id="home-xp">0 / 1000</span>
+      </div>
+
+      <div class="hero">
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-track" cx="60" cy="60" r="52"/>
+            <circle class="ring-fill" id="goal-ring" cx="60" cy="60" r="52"/>
+          </svg>
+          <div class="ring-center">
+            <strong class="num" id="goal-count">0</strong>
+            <span class="num" id="goal-total">/ 40</span>
+          </div>
+        </div>
+        <div class="hero-info">
+          <p class="eyebrow">Objectif du jour</p>
+          <ul class="due-list">
+            <li><b class="num" id="due-review">0</b> à revoir</li>
+            <li><b class="num" id="due-new">0</b> nouvelles</li>
+            <li><b class="num" id="due-learning">0</b> en cours</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" id="btn-start"><span>Réviser</span><kbd>Entrée</kbd></button>
+        <button class="btn btn-ghost" id="btn-sprint"><span>Sprint 60 s</span><small class="num" id="sprint-best">record 0</small></button>
+      </div>
+      <p class="hint" id="home-hint" hidden></p>
+
+      <section class="panel" aria-labelledby="streak-title">
+        <div class="panel-head">
+          <h2 id="streak-title">Série</h2>
+          <p class="streak-num"><b class="num" id="streak-days">0</b> <span id="streak-label">jour</span></p>
+        </div>
+        <div class="calendar" id="calendar" aria-label="30 derniers jours"></div>
+        <p class="small muted" id="streak-note"></p>
+      </section>
+
+      <section class="panel" aria-labelledby="collection-title">
+        <div class="panel-head">
+          <h2 id="collection-title">Collection</h2>
+          <p class="small"><b class="num" id="coll-mastered">0</b> <span class="muted">/ <span class="num" id="coll-total">0</span> maîtrisés</span></p>
+        </div>
+        <div class="legend small muted" aria-hidden="true">
+          <span><i class="t0"></i>neuve</span><span><i class="t1"></i>en cours</span><span><i class="t2"></i>jeune</span><span><i class="t3"></i>solide</span><span><i class="t4"></i>maîtrisée (≥ 21 j)</span>
+        </div>
+        <div id="collection"></div>
+      </section>
+      <p class="footer-note small muted" id="offline-status"></p>
+    </section>
+
+    <!-- ================= SESSION ================= -->
+    <section id="session" class="screen" hidden aria-label="Session de révision">
+      <header class="session-top">
+        <button class="icon-btn" id="btn-quit" aria-label="Terminer la session" title="Terminer (Échap)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+        <div class="session-progress" aria-hidden="true"><i id="session-bar"></i></div>
+        <span class="session-xp num" id="session-xp">+0</span>
+      </header>
+
+      <div class="combo" id="combo" aria-live="polite">
+        <span class="combo-num num" id="combo-num">0</span>
+        <span class="combo-label">combo</span>
+        <span class="combo-mult num" id="combo-mult">×1</span>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="card" id="card">
+          <div class="card-glow" aria-hidden="true"></div>
+          <div class="card-inner">
+            <div class="face front">
+              <div class="badges"><span class="badge" id="card-level">B1</span><span class="badge" id="card-theme">Thème</span><span class="badge badge-mode" id="card-mode">QCM</span></div>
+              <p class="prompt" id="card-fr" lang="fr">…</p>
+              <p class="nature small muted" id="card-nature"></p>
+              <p class="typing-hint num" id="card-hint" aria-hidden="true"></p>
+            </div>
+            <div class="face back">
+              <div class="badges"><span class="badge" id="back-level">B1</span><span class="badge" id="back-theme">Thème</span></div>
+              <p class="target" id="card-de" lang="de">…</p>
+              <p class="grammar small" id="card-grammar" lang="de"></p>
+              <ol class="examples" id="card-examples" lang="de"></ol>
+            </div>
+          </div>
+        </div>
+        <div class="particles" id="particles" aria-hidden="true"></div>
+      </div>
+
+      <div class="controls" id="controls">
+        <!-- QCM -->
+        <div class="choices" id="choices" role="group" aria-label="Choisis la traduction allemande"></div>
+        <!-- Réponse écrite -->
+        <form class="write" id="write" autocomplete="off" hidden>
+          <div class="special-keys" id="special-keys"></div>
+          <div class="write-row">
+            <input id="answer" type="text" lang="de" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Réponse en allemand">
+            <button class="btn btn-primary btn-validate" type="submit">Valider</button>
+          </div>
+          <p class="small muted write-help" id="write-help"></p>
+        </form>
+        <!-- Verdict + notation -->
+        <div class="verdict" id="verdict" hidden aria-live="polite"></div>
+        <div class="ratings" id="ratings" hidden>
+          <button class="rate rate-1" data-r="1"><b>Encore</b><small class="num"></small><kbd>1</kbd></button>
+          <button class="rate rate-2" data-r="2"><b>Difficile</b><small class="num"></small><kbd>2</kbd></button>
+          <button class="rate rate-3" data-r="3"><b>Correct</b><small class="num"></small><kbd>3</kbd></button>
+          <button class="rate rate-4" data-r="4"><b>Facile</b><small class="num"></small><kbd>4</kbd></button>
+        </div>
+        <button class="btn btn-ghost reveal-btn" id="btn-reveal">Je ne sais pas <kbd>Espace</kbd></button>
+      </div>
+    </section>
+
+    <!-- ================= FIN DE SESSION ================= -->
+    <section id="summary" class="screen" hidden aria-labelledby="summary-title">
+      <div class="summary">
+        <p class="eyebrow">Session terminée</p>
+        <h2 id="summary-title" class="summary-title">Bien joué.</h2>
+        <div class="stat-grid">
+          <div class="stat"><b class="num" data-count="seen">0</b><span>cartes vues</span></div>
+          <div class="stat"><b class="num" data-count="rate" data-suffix=" %">0</b><span>de réussite</span></div>
+          <div class="stat stat-amber"><b class="num" data-count="xp" data-prefix="+">0</b><span>points</span></div>
+          <div class="stat stat-amber"><b class="num" data-count="combo">0</b><span>plus long combo</span></div>
+        </div>
+        <div class="acquired">
+          <p class="eyebrow"><span class="num" id="acquired-count">0</span> mots nouvellement acquis</p>
+          <div class="chips" id="acquired"></div>
+        </div>
+        <p class="small muted" id="summary-note"></p>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="btn-again"><span>Continuer</span><kbd>Entrée</kbd></button>
+          <button class="btn btn-ghost" id="btn-home">Accueil</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SPRINT ================= -->
+    <section id="sprint" class="screen" hidden aria-label="Sprint 60 secondes">
+      <header class="session-top">
+        <button class="icon-btn" id="btn-sprint-quit" aria-label="Arrêter le sprint" title="Arrêter (Échap)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+        <div class="timer" aria-hidden="true"><i id="sprint-timer"></i></div>
+        <span class="sprint-clock num" id="sprint-clock">60</span>
+      </header>
+      <div class="combo" id="sprint-combo">
+        <span class="combo-num num" id="sprint-score">0</span>
+        <span class="combo-label">score</span>
+        <span class="combo-mult num" id="sprint-mult">×1</span>
+      </div>
+      <div class="stage">
+        <div class="card sprint-card" id="sprint-card">
+          <div class="card-glow" aria-hidden="true"></div>
+          <div class="card-inner">
+            <div class="face front">
+              <div class="badges"><span class="badge" id="sprint-level">B1</span><span class="badge" id="sprint-theme">Thème</span></div>
+              <p class="prompt" id="sprint-fr" lang="fr">…</p>
+              <p class="nature small muted" id="sprint-nature"></p>
+            </div>
+          </div>
+        </div>
+        <div class="particles" id="sprint-particles" aria-hidden="true"></div>
+      </div>
+      <div class="controls">
+        <div class="choices" id="sprint-choices" role="group" aria-label="Choisis la traduction allemande"></div>
+        <p class="small muted center">Le sprint rapporte des points sans toucher à tes intervalles de révision.</p>
+      </div>
+      <div class="sprint-end" id="sprint-end" hidden>
+        <div class="summary">
+          <p class="eyebrow">Sprint terminé</p>
+          <h2 class="summary-title" id="sprint-end-title">Temps écoulé.</h2>
+          <div class="stat-grid">
+            <div class="stat stat-amber"><b class="num" data-count="score">0</b><span>score</span></div>
+            <div class="stat"><b class="num" data-count="best">0</b><span>record</span></div>
+            <div class="stat stat-amber"><b class="num" data-count="xp" data-prefix="+">0</b><span>points</span></div>
+            <div class="stat"><b class="num" data-count="combo">0</b><span>plus long combo</span></div>
+          </div>
+          <div class="cta-row">
+            <button class="btn btn-primary" id="btn-sprint-again"><span>Rejouer</span><kbd>Entrée</kbd></button>
+            <button class="btn btn-ghost" id="btn-sprint-home">Accueil</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PARAMÈTRES ================= -->
+    <section id="settings" class="screen" hidden aria-labelledby="settings-title">
+      <header class="topbar">
+        <button class="icon-btn" id="btn-settings-back" aria-label="Retour">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <h2 id="settings-title" class="brand small-brand">Paramètres</h2>
+        <span></span>
+      </header>
+
+      <div class="panel">
+        <h3>Niveaux actifs</h3>
+        <div class="toggle-chips" id="set-levels"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Thèmes actifs</h3>
+          <div class="mini-actions"><button class="link" id="themes-all">Tous</button><button class="link" id="themes-med">Médical</button><button class="link" id="themes-none">Aucun</button></div>
+        </div>
+        <div class="theme-list" id="set-themes"></div>
+      </div>
+
+      <div class="panel settings-grid">
+        <label class="field"><span>Objectif du jour <small class="muted">cartes</small></span><input type="number" id="set-goal" min="5" max="500" step="5"></label>
+        <label class="field"><span>Longueur de session <small class="muted">cartes</small></span><input type="number" id="set-session" min="5" max="200" step="5"></label>
+        <label class="field"><span>Nouvelles cartes / jour</span><input type="number" id="set-new" min="0" max="500" step="5"></label>
+        <label class="field"><span>Révisions / jour</span><input type="number" id="set-reviews" min="0" max="5000" step="10"></label>
+      </div>
+
+      <div class="panel">
+        <label class="switch"><input type="checkbox" id="set-article"><span>Article exigé dans les réponses écrites</span></label>
+        <label class="switch"><input type="checkbox" id="set-sound"><span>Sons</span></label>
+        <label class="switch"><input type="checkbox" id="set-motion"><span>Réduire les animations</span></label>
+      </div>
+
+      <div class="panel" id="leech-panel">
+        <h3>Cartes problématiques</h3>
+        <p class="small muted">Une carte ratée 8 fois est signalée ici. Le plus efficace : la reformuler (ajouter un indice ou une phrase plus parlante dans vocabulaire.js), ou se créer un moyen mnémotechnique, puis la remettre à zéro.</p>
+        <ul class="leech-list" id="leech-list"></ul>
+      </div>
+
+      <div class="panel">
+        <h3>Sauvegarde</h3>
+        <p class="small muted">La progression est stockée sur cet appareil. Exporte-la régulièrement pour ne jamais la perdre.</p>
+        <div class="cta-row">
+          <button class="btn btn-ghost" id="btn-export">Exporter (JSON)</button>
+          <label class="btn btn-ghost file-btn">Importer<input type="file" id="file-import" accept="application/json,.json"></label>
+        </div>
+      </div>
+
+      <div class="panel danger">
+        <h3>Remise à zéro</h3>
+        <button class="btn btn-danger-ghost" id="btn-reset">Tout effacer…</button>
+        <div class="reset-confirm" id="reset-confirm" hidden>
+          <p class="small">Toute la progression (cartes, points, série) sera effacée définitivement. Tape <b>EFFACER</b> pour confirmer.</p>
+          <div class="write-row">
+            <input type="text" id="reset-input" autocomplete="off" aria-label="Tape EFFACER">
+            <button class="btn btn-danger" id="btn-reset-confirm" disabled>Effacer</button>
+          </div>
+        </div>
+      </div>
+      <p class="footer-note small muted" id="about"></p>
+    </section>
+  </main>
+
+  <!-- Passage de niveau (plein écran) -->
+  <div class="levelup" id="levelup" hidden aria-live="assertive">
+    <p class="eyebrow">Niveau</p>
+    <p class="levelup-num num" id="levelup-num">2</p>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="./vocabulaire.js"></script>
+  <script src="./js/srs.js"></script>
+  <script src="./js/answer.js"></script>
+  <script src="./js/store.js"></script>
+  <script src="./js/sound.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

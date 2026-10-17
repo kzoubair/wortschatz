@@ -37,16 +37,38 @@
   const themeName = function (code) { return I18N.theme(THEME[code]); };
   const units = function () { return { min: t('u_min'), h: t('u_h'), d: t('u_d'), mo: t('u_mo'), y: t('u_y') }; };
 
-  /* ---------- Récompenses ---------- */
-  const XP_PER_CARD = 10;
-  const XP_PER_LEVEL = 1000;
-  function multiplier(c) { return c >= 20 ? 3 : c >= 10 ? 2.5 : c >= 5 ? 2 : c >= 3 ? 1.5 : 1; }
+  /* ---------- Motivation : rang hospitalier et situations cliniques ----------
+     Un mot est « ancré » quand son intervalle atteint 21 jours (palier 4 du
+     moteur). Le rang dépend uniquement du nombre de mots ancrés et ne
+     redescend jamais (meilleur rang mémorisé dans D.bestRank).
+     Une situation (= un thème) est « prête » à 80 % de mots ancrés.
+     Le combo ne sert plus qu'à l'ambiance visuelle. */
+  const RANKS = I18N.RANKS;
+  const READY_AT = 0.8;
   function comboTier(c) { return c >= 20 ? 4 : c >= 10 ? 3 : c >= 5 ? 2 : c >= 3 ? 1 : 0; }
-  function levelOf(xp) { return Math.floor(xp / XP_PER_LEVEL) + 1; }
+  function anchoredCount() {
+    let n = 0;
+    for (const id in D.cards) if (BY_ID[id] && SRS.tier(D.cards[id]) === 4) n++;
+    return n;
+  }
+  function rankIndexFor(n) { let r = 0; RANKS.forEach(function (x, i) { if (n >= x.min) r = i; }); return r; }
+  /* Au premier lancement (ou après import), le rang est calculé sans écran de promotion */
+  function ensureRank() {
+    const cur = rankIndexFor(anchoredCount());
+    if (typeof D.bestRank !== 'number' || D.bestRank < cur) D.bestRank = Math.max(cur, D.bestRank | 0);
+  }
+  function readinessOf(code) {
+    const list = BY_THEME[code] || [];
+    let a = 0;
+    list.forEach(function (e) { if (SRS.tier(D.cards[e.id]) === 4) a++; });
+    return list.length ? a / list.length : 0;
+  }
+  const pct = function (x) { return Math.floor(x * 100); };
 
   let D = Store.load();
   Sound.setEnabled(D.settings.sound);
   I18N.setLang(D.settings.uiLang);
+  ensureRank();
 
   const now = function () { return Date.now(); };
   const todayKey = function () { return SRS.dayKey(now()); };
@@ -129,11 +151,22 @@
      ========================================================================== */
   function renderHome() {
     const dl = daily();
-    // Niveau et XP
-    const lvl = levelOf(D.xp), inLvl = D.xp % XP_PER_LEVEL;
-    $('#home-level').textContent = t('lvl') + ' ' + lvl;
-    $('#home-xp').textContent = inLvl + ' / ' + XP_PER_LEVEL;
-    requestAnimationFrame(function () { $('#home-xpfill').style.transform = 'scaleX(' + (inLvl / XP_PER_LEVEL) + ')'; });
+    // Rang hospitalier (mots ancrés)
+    const anchored = anchoredCount(), ri = D.bestRank, next = RANKS[ri + 1];
+    $('#home-level').textContent = RANKS[ri].name;
+    let frac0 = 1;
+    if (next) {
+      const from = RANKS[ri].min;
+      frac0 = Math.max(0, Math.min(1, (anchored - from) / (next.min - from)));
+      $('#home-xp').textContent = anchored + ' / ' + next.min;
+      const left = Math.max(0, next.min - anchored);
+      $('#rank-next').textContent = t(left === 1 ? 'nextRank1' : 'nextRank', { r: next.name, n: left });
+    } else {
+      $('#home-xp').textContent = t('anchoredTotal', { a: anchored });
+      $('#rank-next').textContent = t('topRank');
+    }
+    $('#rank-next').title = t('rankHelp');
+    requestAnimationFrame(function () { $('#home-xpfill').style.transform = 'scaleX(' + frac0 + ')'; });
 
     // Objectif du jour
     const goal = D.settings.dailyGoal, done = dl.answered;
@@ -226,7 +259,9 @@
     // Couleur selon le palier moyen : gris → coloré → doré au-delà de 21 jours
     const color = !seen ? TIER_COLORS[0] : !ivlN ? TIER_COLORS[1] : avgIvl < 7 ? TIER_COLORS[2] : avgIvl < 21 ? TIER_COLORS[3] : TIER_COLORS[4];
     const progress = list.length ? (tiers[1] + tiers[2] * 2 + tiers[3] * 3 + tiers[4] * 4) / (4 * list.length) : 0;
-    return { total: list.length, tiers: tiers, mastered: tiers[4], color: color, progress: progress, gold: avgIvl >= 21 };
+    const readiness = list.length ? tiers[4] / list.length : 0;
+    return { total: list.length, tiers: tiers, mastered: tiers[4], color: color, progress: progress,
+             readiness: readiness, ready: readiness >= READY_AT, gold: avgIvl >= 21 || readiness >= READY_AT };
   }
   function renderCollection() {
     const act = activeThemes();
@@ -239,11 +274,11 @@
         const off = 87.96 * (1 - s.progress);
         let bar = '';
         for (let k = 1; k <= 4; k++) if (s.tiers[k]) bar += '<i style="width:' + (100 * s.tiers[k] / s.total) + '%;background:' + TIER_COLORS[k] + '"></i>';
-        html += '<div class="theme-row' + (s.gold ? ' gold' : '') + (act.indexOf(x.code) < 0 ? ' inactive' : '') + '" data-theme="' + x.code + '">' +
+        html += '<div class="theme-row' + (s.gold ? ' gold' : '') + (s.ready ? ' ready' : '') + (act.indexOf(x.code) < 0 ? ' inactive' : '') + '" data-theme="' + x.code + '">' +
           '<button class="theme-toggle" aria-expanded="' + (!!openThemes[x.code]) + '">' +
           '<svg class="mini-ring" viewBox="0 0 34 34" aria-hidden="true"><circle class="bgc" cx="17" cy="17" r="14"/><circle class="fgc" cx="17" cy="17" r="14" style="stroke:' + s.color + ';stroke-dashoffset:' + off + '"/></svg>' +
-          '<span><span class="theme-name">' + esc(themeName(x.code)) + '</span><span class="theme-bar">' + bar + '</span></span>' +
-          '<span class="theme-count num"><b>' + s.mastered + '</b> / ' + s.total + '</span></button>' +
+          '<span><span class="theme-name">' + esc(I18N.situation(x.code)) + '</span><span class="theme-sub">' + esc(themeName(x.code)) + '</span><span class="theme-bar">' + bar + '</span></span>' +
+          '<span class="theme-count num"><b>' + s.mastered + '</b> / ' + s.total + '<small>' + esc(s.ready ? t('ready') : t('readyPct', { p: pct(s.readiness) })) + '</small></span></button>' +
           (openThemes[x.code] ? renderTiles(x.code) : '') + '</div>';
       });
     });
@@ -284,7 +319,6 @@
     const box = isSprint ? $('#sprint-combo') : $('#combo');
     const num = isSprint ? $('#sprint-score') : $('#combo-num');
     num.textContent = isSprint ? scoreOverride : combo;
-    (isSprint ? $('#sprint-mult') : $('#combo-mult')).textContent = '×' + String(multiplier(combo)).replace('.', ',');
     box.classList.toggle('hot', combo >= 3);
     rootEl.classList.toggle('combo-3', combo >= 3);
     document.body.classList.toggle('combo-20', combo >= 20 && !reducedMotion());
@@ -314,19 +348,17 @@
     el.appendChild(frag);
     setTimeout(function () { el.innerHTML = ''; }, 1100);
   }
-  function addXP(amount) {
-    const before = levelOf(D.xp);
-    D.xp += amount;
-    const after = levelOf(D.xp);
-    if (after > before) showLevelUp(after);
+  function checkRank() {
+    const cur = rankIndexFor(anchoredCount());
+    if (cur > D.bestRank) { D.bestRank = cur; showRankUp(RANKS[cur].name); }
   }
-  function showLevelUp(n) {
+  function showRankUp(name) {
     const el = $('#levelup');
-    $('#levelup-num').textContent = n;
+    $('#levelup-num').textContent = name;
     el.hidden = true; void el.offsetWidth; el.hidden = false;
     Sound.levelUp();
-    clearTimeout(showLevelUp.t);
-    showLevelUp.t = setTimeout(function () { el.hidden = true; }, 1500);
+    clearTimeout(showRankUp.t);
+    showRankUp.t = setTimeout(function () { el.hidden = true; }, 1500);
   }
   function animateCard(card, cls, cb, ms) {
     card.classList.remove('enter', 'exit-right', 'exit-down', 'shake');
@@ -421,11 +453,12 @@
 
   function startSession() {
     Sound.unlock();
-    Object.assign(S, { count: 0, correct: 0, xp: 0, combo: 0, maxCombo: 0, acquired: [], lastId: null,
-                       entry: null, card: null, format: 'qcm', phase: 'front', ok: false, pending: 0, busy: false });
+    const snap = {};
+    THEMES.forEach(function (x) { snap[x.code] = readinessOf(x.code); });
+    Object.assign(S, { count: 0, correct: 0, combo: 0, maxCombo: 0, acquired: [], anchored: [], touched: {}, snap: snap,
+                       rankBefore: D.bestRank, lastId: null, entry: null, card: null, format: 'qcm', phase: 'front', ok: false, busy: false });
     show('session');
     updateCombo('session', 0);
-    $('#session-xp').textContent = '+0';
     nextCard(true);
   }
 
@@ -438,7 +471,7 @@
     S.entry = e;
     S.card = D.cards[e.id] || SRS.newCard();
     S.format = D.settings.answerMode === 'flip' ? 'flip' : SRS.questionFormat(S.card);
-    S.phase = 'front'; S.ok = false; S.pending = 0; S.busy = false; S.check = null; S.picked = null;
+    S.phase = 'front'; S.ok = false; S.busy = false; S.check = null; S.picked = null;
 
     const card = $('#card');
     const flip = S.format === 'flip';
@@ -454,6 +487,7 @@
     $('#card-hint').textContent = S.format === 'ecrit' ? typingHint(e) : S.format === 'ecrit-renforce' ? t('noHint') : '';
     $('#card-tap').hidden = !flip;
     $('#session-bar').style.transform = 'scaleX(' + (S.count / D.settings.sessionLength) + ')';
+    $('#session-count').textContent = t('sessionCount', { a: S.count + 1, b: D.settings.sessionLength });
     // Le dos est rempli à l'avance mais n'apparaît qu'au retournement
     setTimeout(function () { if (S.entry === e) fillBack(e); }, first ? 0 : 60);
 
@@ -538,8 +572,6 @@
     if (ok) {
       S.combo++;
       S.maxCombo = Math.max(S.maxCombo, S.combo);
-      S.pending = Math.round(XP_PER_CARD * multiplier(S.combo));
-      S.xp += S.pending;
       Sound.correct(comboTier(S.combo));
       comboFx(prev, S.combo, $('#particles'));
     } else {
@@ -548,7 +580,6 @@
       setTimeout(function () { animateCard(card, 'shake'); }, reducedMotion() ? 0 : 420);
     }
     updateCombo('session', S.combo);
-    $('#session-xp').textContent = '+' + S.xp;
     renderVerdict(ok);
     // En cas d'erreur, seul « Encore » est possible
     showRatings(ok, !ok ? 1 : (S.check && (!S.check.exact || S.check.note)) ? 2 : 3);
@@ -614,24 +645,21 @@
       if (r > 1) {
         S.combo++;
         S.maxCombo = Math.max(S.maxCombo, S.combo);
-        S.pending = Math.round(XP_PER_CARD * multiplier(S.combo));
-        S.xp += S.pending;
         Sound.correct(comboTier(S.combo));
         comboFx(prev, S.combo, $('#particles'));
       } else {
-        S.combo = 0; S.pending = 0;
+        S.combo = 0;
         Sound.wrong();
         animateCard(card, 'shake');
         exitDelay = reducedMotion() ? 0 : 430;
       }
       updateCombo('session', S.combo);
-      $('#session-xp').textContent = '+' + S.xp;
     } else if (S.ok && r === 1) {
-      // « Encore » volontaire sur une bonne réponse : le combo retombe, les points sont annulés
-      S.xp -= S.pending; S.pending = 0; S.combo = 0;
+      // « Encore » volontaire sur une bonne réponse : le combo retombe
+      S.combo = 0;
       updateCombo('session', 0);
-      $('#session-xp').textContent = '+' + S.xp;
     }
+    const tierBefore = SRS.tier(before);
 
     const res = SRS.answer(before, r, now());
     D.cards[e.id] = res.card;
@@ -640,14 +668,15 @@
     if (res.wasNew) dl.newSeen++;
     if (before.s === SRS.STATE.REVIEW) dl.reviewsDone++;
     dl.answered++;
-    dl.xp += S.pending;
     const tk = todayKey();
     D.days[tk] = (D.days[tk] || 0) + 1;
     S.count++;
     if (r > 1) S.correct++;
     if (res.graduated) S.acquired.push(e);
+    if (tierBefore < 4 && SRS.tier(res.card) === 4) S.anchored.push(e);
+    S.touched[e.theme] = true;
     if (S.combo > D.bestCombo) D.bestCombo = S.combo;
-    addXP(S.pending);
+    checkRank();
     if (dl.answered === D.settings.dailyGoal) {
       setTimeout(function () { Sound.goal(); toast(esc(t('goalReached', { n: D.settings.dailyGoal }))); }, 350);
     }
@@ -668,7 +697,17 @@
     show('summary');
     const rateV = S.count ? Math.round(100 * S.correct / S.count) : 0;
     $('#summary-title').textContent = S.count === 0 ? t('sumEmpty') : rateV >= 90 ? t('sumGreat') : rateV >= 70 ? t('sumGood') : t('sumOk');
-    countUp($('#summary'), { seen: S.count, rate: rateV, xp: S.xp, combo: S.maxCombo });
+    countUp($('#summary'), { seen: S.count, rate: rateV, anchored: S.anchored.length, combo: S.maxCombo });
+    // Progression des situations travaillées + distance au prochain rang
+    const lines = [];
+    Object.keys(S.touched).forEach(function (code) {
+      const a = pct(S.snap[code] || 0), b = pct(readinessOf(code));
+      if (b !== a) lines.push('<li><span>' + esc(I18N.situation(code)) + '</span><b class="num">' + a + ' % → ' + b + ' %</b></li>');
+    });
+    const next = RANKS[D.bestRank + 1];
+    if (D.bestRank > S.rankBefore) lines.unshift('<li class="rank"><span>' + esc(t('rankUp')) + '</span><b>' + esc(RANKS[D.bestRank].name) + '</b></li>');
+    if (next) lines.push('<li class="rank"><span>' + esc(t(next.min - anchoredCount() === 1 ? 'sumRankNext1' : 'sumRankNext', { r: next.name, n: Math.max(0, next.min - anchoredCount()) })) + '</span><b>' + esc(next.name) + '</b></li>');
+    $('#sum-progress').innerHTML = lines.join('');
     $('#acquired-count').textContent = S.acquired.length;
     $('#acquired').innerHTML = S.acquired.map(function (e, i) {
       return '<span lang="de" style="animation-delay:' + (0.4 + i * 0.05) + 's">' + esc(e.t) + '</span>';
@@ -711,7 +750,7 @@
       note = t('sprintFewKnown');
     }
     if (known.length < 4) { toast(esc(t('sprintNoTheme'))); return; }
-    Object.assign(SP, { running: true, score: 0, combo: 0, maxCombo: 0, xp: 0, list: known, queue: [], locked: false,
+    Object.assign(SP, { running: true, score: 0, answered: 0, combo: 0, maxCombo: 0, list: known, queue: [], locked: false,
                         start: performance.now(), lastTick: 60 });
     show('sprint');
     $('#sprint-end').hidden = true;
@@ -745,6 +784,7 @@
     if (!SP.running || SP.locked || !SP.options[i]) return;
     SP.locked = true;
     const ok = SP.options[i].id === SP.entry.id;
+    SP.answered++;
     $$('#sprint-choices .choice').forEach(function (b, k) {
       b.disabled = true;
       if (SP.options[k].id === SP.entry.id) b.classList.add('right');
@@ -753,7 +793,6 @@
     const prev = SP.combo;
     if (ok) {
       SP.score++; SP.combo++; SP.maxCombo = Math.max(SP.maxCombo, SP.combo);
-      SP.xp += Math.round(XP_PER_CARD * multiplier(SP.combo));
       Sound.correct(comboTier(SP.combo));
       comboFx(prev, SP.combo, $('#sprint-particles'));
       updateCombo('sprint', SP.combo, SP.score);
@@ -773,11 +812,10 @@
     const record = SP.score > D.sprintBest && !aborted;
     if (record) D.sprintBest = SP.score;
     if (SP.maxCombo > D.bestCombo) D.bestCombo = SP.maxCombo;
-    addXP(SP.xp);
     Store.saveNow();
     $('#sprint-end-title').textContent = aborted ? t('sprintAborted') : record ? t('sprintRecord') : t('sprintTime');
     $('#sprint-end').hidden = false;
-    countUp($('#sprint-end'), { score: SP.score, best: D.sprintBest, xp: SP.xp, combo: SP.maxCombo });
+    countUp($('#sprint-end'), { score: SP.score, best: D.sprintBest, accuracy: SP.answered ? Math.round(100 * SP.score / SP.answered) : 0, combo: SP.maxCombo });
     setTimeout(function () { $('#btn-sprint-again').focus(); }, 50);
   }
 
@@ -894,7 +932,7 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
     toast(esc(t('exported')));
   };
-  function applyAll() { Sound.setEnabled(D.settings.sound); applyMotion(); applyAppearance(); applyLanguage(); buildPool(); renderSettings(); }
+  function applyAll() { ensureRank(); Sound.setEnabled(D.settings.sound); applyMotion(); applyAppearance(); applyLanguage(); buildPool(); renderSettings(); }
   $('#file-import').onchange = function () {
     const f = this.files[0]; this.value = '';
     if (!f) return;

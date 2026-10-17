@@ -457,3 +457,17 @@ input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--amber); 
 .field-label:first-of-type { margin-top: 0; }
 .toggle-chips { flex-wrap: wrap; }
 #mode-help { margin: 8px 0 4px; }
+
+/* ---------- Rang hospitalier et situations cliniques ---------- */
+.level-badge { font-size: 14px; }
+.rank-next { margin: -2px 0 6px; }
+.levelup-rank { font-size: clamp(40px, 13vw, 84px); letter-spacing: -.02em; padding: 0 16px; overflow-wrap: anywhere; }
+.theme-sub { display: block; font-size: 12px; color: var(--muted); margin-top: 1px; }
+.theme-count { text-align: right; }
+.theme-count small { display: block; font-size: 11px; font-weight: 500; margin-top: 3px; }
+.theme-row.ready .theme-count small { color: var(--amber-text); font-weight: 700; }
+.theme-row.ready .theme-name::after { content: " ✓"; color: var(--amber-text); }
+.sum-progress { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 6px; }
+.sum-progress li { display: flex; justify-content: space-between; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 9px 12px; font-size: 13px; }
+.sum-progress li b { color: var(--amber-text); white-space: nowrap; }
+.sum-progress li.rank { border-color: var(--amber-soft); }

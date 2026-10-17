@@ -51,10 +51,11 @@
       </header>
 
       <div class="level-strip">
-        <span class="level-badge num" id="home-level"></span>
+        <span class="level-badge" id="home-level"></span>
         <div class="xpbar" aria-hidden="true"><i id="home-xpfill"></i></div>
-        <span class="xp-text num" id="home-xp">0 / 1000</span>
+        <span class="xp-text num" id="home-xp"></span>
       </div>
+      <p class="small muted rank-next" id="rank-next"></p>
 
       <div class="hero">
         <div class="ring-wrap">
@@ -112,13 +113,12 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
         </button>
         <div class="session-progress" aria-hidden="true"><i id="session-bar"></i></div>
-        <span class="session-xp num" id="session-xp">+0</span>
+        <span class="session-xp num" id="session-count">0 / 20</span>
       </header>
 
       <div class="combo" id="combo" aria-live="polite">
         <span class="combo-num num" id="combo-num">0</span>
         <span class="combo-label" data-i18n="combo"></span>
-        <span class="combo-mult num" id="combo-mult">×1</span>
       </div>
 
       <div class="stage" id="stage">
@@ -178,9 +178,10 @@
         <div class="stat-grid">
           <div class="stat"><b class="num" data-count="seen">0</b><span data-i18n="cardsSeen"></span></div>
           <div class="stat"><b class="num" data-count="rate" data-suffix=" %">0</b><span data-i18n="successRate"></span></div>
-          <div class="stat stat-amber"><b class="num" data-count="xp" data-prefix="+">0</b><span data-i18n="points"></span></div>
+          <div class="stat stat-amber"><b class="num" data-count="anchored" data-prefix="+">0</b><span data-i18n="anchoredToday"></span></div>
           <div class="stat stat-amber"><b class="num" data-count="combo">0</b><span data-i18n="longestCombo"></span></div>
         </div>
+        <ul class="sum-progress" id="sum-progress"></ul>
         <div class="acquired">
           <p class="eyebrow"><span class="num" id="acquired-count">0</span> <span data-i18n="acquired"></span></p>
           <div class="chips" id="acquired"></div>
@@ -205,7 +206,6 @@
       <div class="combo" id="sprint-combo">
         <span class="combo-num num" id="sprint-score">0</span>
         <span class="combo-label" data-i18n="score"></span>
-        <span class="combo-mult num" id="sprint-mult">×1</span>
       </div>
       <div class="stage">
         <div class="card sprint-card" id="sprint-card">
@@ -231,8 +231,8 @@
           <div class="stat-grid">
             <div class="stat stat-amber"><b class="num" data-count="score">0</b><span data-i18n="score"></span></div>
             <div class="stat"><b class="num" data-count="best">0</b><span data-i18n="best"></span></div>
-            <div class="stat stat-amber"><b class="num" data-count="xp" data-prefix="+">0</b><span data-i18n="points"></span></div>
-            <div class="stat"><b class="num" data-count="combo">0</b><span data-i18n="longestCombo"></span></div>
+            <div class="stat"><b class="num" data-count="accuracy" data-suffix=" %">0</b><span data-i18n="accuracy"></span></div>
+            <div class="stat stat-amber"><b class="num" data-count="combo">0</b><span data-i18n="longestCombo"></span></div>
           </div>
           <div class="cta-row">
             <button class="btn btn-primary" id="btn-sprint-again"><span data-i18n="replay"></span><kbd data-i18n="enterKey"></kbd></button>
@@ -332,8 +332,8 @@
 
   <!-- Passage de niveau (plein écran) -->
   <div class="levelup" id="levelup" hidden aria-live="assertive">
-    <p class="eyebrow" data-i18n="level"></p>
-    <p class="levelup-num num" id="levelup-num">2</p>
+    <p class="eyebrow" data-i18n="rankUp"></p>
+    <p class="levelup-num levelup-rank" id="levelup-num"></p>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 

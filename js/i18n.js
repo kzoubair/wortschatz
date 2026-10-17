@@ -11,10 +11,10 @@
   const STR = {
     fr: {
       settings: 'Paramètres', back: 'Retour', soundOff: 'Couper le son', soundOn: 'Activer le son',
-      lvl: 'Niv.', goalToday: 'Objectif du jour', toReview: 'à revoir', newCards: 'nouvelles', inProgress: 'en cours',
+      goalToday: 'Objectif du jour', toReview: 'à revoir', newCards: 'nouvelles', inProgress: 'en cours',
       review: 'Réviser', enterKey: 'Entrée', spaceKey: 'Espace', sprint: 'Sprint 60 s', record: 'record {n}',
-      streak: 'Série', day: 'jour', days: 'jours', collection: 'Collection', mastered: 'maîtrisés',
-      tierNew: 'neuve', tierLearn: 'en cours', tierYoung: 'jeune', tierSolid: 'solide', tierMastered: 'maîtrisée (≥ 21 j)',
+      streak: 'Série', day: 'jour', days: 'jours', collection: 'Situations cliniques', mastered: 'ancrés',
+      tierNew: 'neuve', tierLearn: 'en cours', tierYoung: 'jeune', tierSolid: 'solide', tierMastered: 'ancrée (≥ 21 j)',
       domMedical: 'Médical et hospitalier', domGeneral: 'Allemand général',
       noPool: 'Aucun thème ou niveau actif : choisis-en dans les paramètres.',
       allDone: 'Tout est à jour pour aujourd\'hui.', moreNew: '+10 nouvelles cartes',
@@ -33,11 +33,11 @@
       vNotQuite: 'Pas tout à fait',
       goalReached: 'Objectif du jour atteint : {n} cartes.', leech: '« {w} » résiste : 8 échecs. Une reformulation aiderait — voir Paramètres.',
       sessionDone: 'Session terminée', sumEmpty: 'Rien à réviser pour l\'instant.', sumGreat: 'Superbe session.', sumGood: 'Bien joué.', sumOk: 'Chaque carte compte.',
-      cardsSeen: 'cartes vues', successRate: 'de réussite', points: 'points', longestCombo: 'plus long combo',
-      acquired: 'mots nouvellement acquis', acquiredNone: 'Les nouvelles cartes deviennent « acquises » après leurs deux étapes d\'apprentissage.',
+      cardsSeen: 'cartes vues', successRate: 'de réussite', anchoredToday: 'mots ancrés', longestCombo: 'plus long combo',
+      acquired: 'nouveaux mots appris', acquiredNone: 'Une nouvelle carte compte comme apprise après ses deux étapes d\'apprentissage (1 min puis 10 min).',
       leftToday: '{n} cartes encore disponibles aujourd\'hui.', allDoneTomorrow: 'Tout est à jour. Rendez-vous demain pour les prochaines révisions.',
       continue: 'Continuer', home: 'Accueil',
-      stopSprint: 'Arrêter le sprint', score: 'score', sprintNote: 'Le sprint rapporte des points sans toucher à tes intervalles de révision.',
+      stopSprint: 'Arrêter le sprint', score: 'bonnes réponses', accuracy: 'de précision', sprintNote: 'Le sprint rapporte des points sans toucher à tes intervalles de révision.',
       sprintDone: 'Sprint terminé', best: 'record', replay: 'Rejouer', sprintAborted: 'Sprint interrompu.', sprintRecord: 'Nouveau record !', sprintTime: 'Temps écoulé.',
       sprintFewKnown: 'Encore peu de cartes connues : le sprint pioche aussi parmi les prochaines nouvelles.', sprintNoTheme: 'Active au moins un thème pour lancer un sprint.',
       display: 'Affichage', uiLang: 'Langue de l\'interface', appearance: 'Apparence', apSystem: 'Système', apDark: 'Sombre', apLight: 'Clair',
@@ -55,7 +55,12 @@
       importConfirm: 'Remplacer la progression actuelle par celle du fichier « {f} » ?', imported: 'Progression importée : {n} cartes.', importFail: 'Import impossible : {e}',
       resetTitle: 'Remise à zéro', resetBtn: 'Tout effacer…', resetWord: 'EFFACER',
       resetHelp: 'Toute la progression (cartes, points, série) sera effacée définitivement. Tape <b>{w}</b> pour confirmer.', erase: 'Effacer', resetDone: 'Progression effacée.',
-      about: '{n} entrées · {t} thèmes · format de sauvegarde v{v}', level: 'Niveau',
+      about: '{n} entrées · {t} thèmes · format de sauvegarde v{v}',
+      rankUp: 'Nouveau rang', anchoredCount: '{a} / {b} mots ancrés', anchoredTotal: '{a} mots ancrés',
+      nextRank: 'Prochain rang : {r} dans {n} mots ancrés', nextRank1: 'Prochain rang : {r} dans 1 mot ancré', topRank: 'Rang le plus élevé atteint.',
+      rankHelp: 'Un mot est ancré quand il revient à 21 jours ou plus. Le rang ne redescend jamais.',
+      ready: 'prête', readyPct: '{p} % prête', sumRankNext: 'Prochain rang : {r} dans {n} mots ancrés.', sumRankNext1: 'Prochain rang : {r} dans 1 mot ancré.',
+      sumProgress: '{s} : {a} % → {b} %', sessionCount: '{a} / {b}',
       offlineNo: 'Mode hors ligne indisponible ici (ouvrir via http://localhost ou en HTTPS).', offlineOk: 'Disponible hors ligne · {n} entrées',
       swFail: 'Service worker non installé : {e}', newVersion: 'Nouvelle version installée.', reload: 'Recharger',
       u_min: 'min', u_h: 'h', u_d: 'j', u_mo: 'mois', u_y: 'an',
@@ -64,10 +69,10 @@
     },
     de: {
       settings: 'Einstellungen', back: 'Zurück', soundOff: 'Ton aus', soundOn: 'Ton an',
-      lvl: 'Stufe', goalToday: 'Tagesziel', toReview: 'fällig', newCards: 'neu', inProgress: 'im Lernen',
+      goalToday: 'Tagesziel', toReview: 'fällig', newCards: 'neu', inProgress: 'im Lernen',
       review: 'Lernen', enterKey: 'Enter', spaceKey: 'Leertaste', sprint: 'Sprint 60 s', record: 'Rekord {n}',
-      streak: 'Lernserie', day: 'Tag', days: 'Tage', collection: 'Sammlung', mastered: 'gemeistert',
-      tierNew: 'neu', tierLearn: 'im Lernen', tierYoung: 'jung', tierSolid: 'solide', tierMastered: 'gemeistert (≥ 21 T.)',
+      streak: 'Lernserie', day: 'Tag', days: 'Tage', collection: 'Klinische Situationen', mastered: 'verankert',
+      tierNew: 'neu', tierLearn: 'im Lernen', tierYoung: 'jung', tierSolid: 'solide', tierMastered: 'verankert (≥ 21 T.)',
       domMedical: 'Medizin und Klinik', domGeneral: 'Allgemeinwortschatz',
       noPool: 'Kein Thema oder Niveau aktiv: Wähle welche in den Einstellungen.',
       allDone: 'Für heute ist alles erledigt.', moreNew: '+10 neue Karten',
@@ -86,11 +91,11 @@
       vNotQuite: 'Nicht ganz',
       goalReached: 'Tagesziel erreicht: {n} Karten.', leech: '„{w}“ ist hartnäckig: 8 Fehler. Eine Umformulierung würde helfen — siehe Einstellungen.',
       sessionDone: 'Sitzung beendet', sumEmpty: 'Gerade gibt es nichts zu lernen.', sumGreat: 'Großartige Sitzung.', sumGood: 'Gut gemacht.', sumOk: 'Jede Karte zählt.',
-      cardsSeen: 'Karten gesehen', successRate: 'richtig', points: 'Punkte', longestCombo: 'längste Kombo',
+      cardsSeen: 'Karten gesehen', successRate: 'richtig', anchoredToday: 'Wörter verankert', longestCombo: 'längste Kombo',
       acquired: 'neu gelernte Wörter', acquiredNone: 'Neue Karten gelten nach ihren zwei Lernschritten als gelernt.',
       leftToday: 'Heute noch {n} Karten verfügbar.', allDoneTomorrow: 'Alles erledigt. Bis morgen zu den nächsten Wiederholungen.',
       continue: 'Weiter', home: 'Start',
-      stopSprint: 'Sprint beenden', score: 'Punkte', sprintNote: 'Der Sprint bringt Punkte, ohne deine Wiederholungsintervalle zu verändern.',
+      stopSprint: 'Sprint beenden', score: 'richtige Antworten', accuracy: 'Trefferquote', sprintNote: 'Der Sprint bringt Punkte, ohne deine Wiederholungsintervalle zu verändern.',
       sprintDone: 'Sprint beendet', best: 'Rekord', replay: 'Nochmal', sprintAborted: 'Sprint abgebrochen.', sprintRecord: 'Neuer Rekord!', sprintTime: 'Zeit abgelaufen.',
       sprintFewKnown: 'Noch wenige bekannte Karten: Der Sprint nimmt auch die nächsten neuen Karten dazu.', sprintNoTheme: 'Aktiviere mindestens ein Thema für einen Sprint.',
       display: 'Anzeige', uiLang: 'Sprache der Oberfläche', appearance: 'Darstellung', apSystem: 'System', apDark: 'Dunkel', apLight: 'Hell',
@@ -108,7 +113,12 @@
       importConfirm: 'Aktuellen Fortschritt durch die Datei „{f}“ ersetzen?', imported: 'Fortschritt importiert: {n} Karten.', importFail: 'Import nicht möglich: {e}',
       resetTitle: 'Zurücksetzen', resetBtn: 'Alles löschen…', resetWord: 'LÖSCHEN',
       resetHelp: 'Der gesamte Fortschritt (Karten, Punkte, Serie) wird endgültig gelöscht. Tippe <b>{w}</b> zur Bestätigung.', erase: 'Löschen', resetDone: 'Fortschritt gelöscht.',
-      about: '{n} Einträge · {t} Themen · Speicherformat v{v}', level: 'Stufe',
+      about: '{n} Einträge · {t} Themen · Speicherformat v{v}',
+      rankUp: 'Neuer Rang', anchoredCount: '{a} / {b} verankerte Wörter', anchoredTotal: '{a} verankerte Wörter',
+      nextRank: 'Nächster Rang: {r} in {n} verankerten Wörtern', nextRank1: 'Nächster Rang: {r} in 1 verankerten Wort', topRank: 'Höchster Rang erreicht.',
+      rankHelp: 'Ein Wort gilt als verankert, wenn es erst nach 21 Tagen oder später wiederkommt. Der Rang sinkt nie.',
+      ready: 'bereit', readyPct: '{p} % bereit', sumRankNext: 'Nächster Rang: {r} in {n} verankerten Wörtern.', sumRankNext1: 'Nächster Rang: {r} in 1 verankerten Wort.',
+      sumProgress: '{s}: {a} % → {b} %', sessionCount: '{a} / {b}',
       offlineNo: 'Offline-Modus hier nicht verfügbar (über http://localhost oder HTTPS öffnen).', offlineOk: 'Offline verfügbar · {n} Einträge',
       swFail: 'Service Worker nicht installiert: {e}', newVersion: 'Neue Version installiert.', reload: 'Neu laden',
       u_min: 'Min.', u_h: 'Std.', u_d: 'T.', u_mo: 'Mon.', u_y: 'J.',
@@ -126,6 +136,39 @@
     sentiments: 'Gefühle und Meinungen', temps: 'Zeit und Mengen', connecteurs: 'Konnektoren und Wendungen'
   };
 
+  /* Rangs hospitaliers : seuil = nombre de mots ancrés (intervalle ≥ 21 jours) */
+  const RANKS = [
+    { name: 'Hospitant', min: 0 }, { name: 'Famulant', min: 50 }, { name: 'PJ-Student', min: 150 },
+    { name: 'Assistenzarzt', min: 350 }, { name: 'Facharzt', min: 700 }, { name: 'Oberarzt', min: 1200 },
+    { name: 'Chefarzt', min: 1800 }
+  ];
+
+  /* Chaque thème correspond à une situation concrète ; « prête » à 80 % de mots ancrés */
+  const SITUATIONS = {
+    fr: {
+      anamnese: 'Mener un interrogatoire complet', anatomie: 'Localiser et décrire précisément',
+      examens: 'Demander et commenter des examens', traitements: 'Prescrire et expliquer un traitement',
+      urgences: 'Gérer une urgence en allemand', patient: 'Informer et rassurer un patient',
+      equipe: 'Faire une transmission', chirurgie: 'Suivre un patient opéré',
+      maladies: 'Discuter d’un diagnostic avec un collègue', admin: 'Gérer les formalités de l’hôpital',
+      travail: 'Échanger avec ses collègues', logement: 'Se loger et faire ses démarches',
+      quotidien: 'Vivre au quotidien en Allemagne', transports: 'Se déplacer sans souci',
+      sentiments: 'Exprimer son ressenti et son avis', temps: 'Parler de durées et de chiffres',
+      connecteurs: 'Argumenter avec nuance'
+    },
+    de: {
+      anamnese: 'Eine vollständige Anamnese erheben', anatomie: 'Befunde anatomisch genau beschreiben',
+      examens: 'Untersuchungen anordnen und besprechen', traitements: 'Therapien verordnen und erklären',
+      urgences: 'Einen Notfall auf Deutsch managen', patient: 'Patienten aufklären und beruhigen',
+      equipe: 'Eine Übergabe machen', chirurgie: 'Operierte Patienten betreuen',
+      maladies: 'Diagnosen mit Kollegen besprechen', admin: 'Klinikformalitäten erledigen',
+      travail: 'Sich mit Kollegen austauschen', logement: 'Wohnung finden und Behördengänge erledigen',
+      quotidien: 'Den Alltag in Deutschland meistern', transports: 'Problemlos unterwegs sein',
+      sentiments: 'Gefühle und Meinungen ausdrücken', temps: 'Über Zeiten und Zahlen sprechen',
+      connecteurs: 'Differenziert argumentieren'
+    }
+  };
+
   let lang = 'fr';
   const I18N = {
     setLang: function (l) { lang = STR[l] ? l : 'fr'; },
@@ -135,6 +178,8 @@
       if (vars) Object.keys(vars).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
       return s;
     },
+    RANKS: RANKS,
+    situation: function (code) { return (SITUATIONS[lang] || SITUATIONS.fr)[code] || ''; },
     theme: function (t) { return lang === 'de' && THEME_DE[t.code] ? THEME_DE[t.code] : t.nom; },
     /* Applique les attributs data-i18n du HTML */
     apply: function (rootEl) {

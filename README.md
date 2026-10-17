@@ -1,7 +1,7 @@
 # Wortschatz Klinik
 
 Webapp de révision du vocabulaire allemand **B1 · B2 · C1** pour médecins francophones partant travailler dans un hôpital en Allemagne.
-Moteur de répétition espacée façon Anki, habillage et récompenses d'un jeu, **100 % hors ligne** et installable sur téléphone (PWA).
+Moteur de répétition espacée façon Anki, progression par rang hospitalier et situations cliniques, **100 % hors ligne** et installable sur téléphone (PWA).
 
 - **2391 entrées** réparties en 17 thèmes : 61 % médical/hospitalier (anamnèse, anatomie, examens, traitements, urgences, communication patient, équipe, chirurgie, maladies, administratif), 39 % allemand général (travail, logement et démarches, vie quotidienne, transports, sentiments, temps, connecteurs).
 - Chaque entrée : mot allemand avec article et genre (pluriel pour les noms), niveau, thème, nature, deux phrases d'exemple en allemand en contexte hospitalier.
@@ -13,6 +13,14 @@ Moteur de répétition espacée façon Anki, habillage et récompenses d'un jeu,
 - **Apparence** : système, sombre (par défaut) ou clair.
 - **Mode de réponse** : *carte à retourner* (par défaut : on touche la carte pour voir l'allemand et les exemples, puis on s'auto-évalue) ou *QCM et saisie* (le moteur choisit QCM pour les cartes neuves, saisie écrite ensuite).
 - **Mode Shuffle** : nouvelles cartes dans un ordre aléatoire, tous thèmes actifs confondus (B1 avant B2 avant C1).
+
+## Motivation : rang hospitalier et situations cliniques
+
+Pas de points : la progression ne récompense que ce qui est réellement mémorisé.
+- Un mot est **ancré** quand son intervalle de révision atteint 21 jours.
+- **Rang** selon le nombre de mots ancrés : Hospitant (0) · Famulant (50) · PJ-Student (150) · Assistenzarzt (350) · Facharzt (700) · Oberarzt (1200) · Chefarzt (1800). Le rang ne redescend jamais.
+- Chaque thème est une **situation clinique** (« Faire une transmission », « Mener un interrogatoire complet »…), déclarée **prête** à 80 % de mots ancrés.
+- Le **combo** (bonnes réponses d'affilée) ne garde que ses effets visuels. Le **Sprint** compte les bonnes réponses, la précision et le record.
 
 ## Lancer l'app en local
 

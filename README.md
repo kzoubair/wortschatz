@@ -78,7 +78,7 @@ La progression est stockée dans `localStorage`, indépendamment du cache : une 
 
 ## Clavier
 
-`Espace` / `Entrée` ou toucher la carte : retourner la carte · `1`–`4` : notation (et choix du QCM) · `Entrée` : valider ou appliquer la note suggérée · `Échap` : terminer · `Alt+A/O/U/S` : ä ö ü ß (la saisie `ae oe ue ss` est aussi acceptée).
+`Espace` ou toucher la carte : retourner la carte (recto ↔ verso) · `1`–`4` : notation (et choix du QCM) · `Entrée` : note suggérée · `Entrée` : valider ou appliquer la note suggérée · `Échap` : terminer · `Alt+A/O/U/S` : ä ö ü ß (la saisie `ae oe ue ss` est aussi acceptée).
 
 ## Licences
 

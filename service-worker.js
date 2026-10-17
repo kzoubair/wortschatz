@@ -12,7 +12,7 @@
      l'app fonctionne à la racine d'un domaine comme dans un sous-dossier
      (ex. https://nom.github.io/allemand/).
    ========================================================================== */
-const CACHE_VERSION = 'v1.1.0';
+const CACHE_VERSION = 'v1.1.1';
 const CACHE_NAME = 'wortschatz-' + CACHE_VERSION;
 
 const FILES = [

@@ -395,9 +395,8 @@
   function fillBack(e) {
     $('#card-de').innerHTML = targetHTML(e);
     const g = [];
-    g.push(e.nature === 'nom' ? genreLabel(e.genre) : natureLabel(e.nature));
-    if (e.pluriel) g.push(t('pl') + ' <span lang="de">' + esc(e.pluriel) + '</span>');
-    if (e.info) g.push('<span lang="de">' + esc(e.info) + '</span>');
+    if (e.pluriel) g.push(esc(e.pluriel));
+    if (e.info) g.push(esc(e.info));
     $('#card-grammar').innerHTML = g.join(' · ');
     $('#card-examples').innerHTML = [e.exemple1, e.exemple2].map(function (s) { return '<li>' + highlight(s, e) + '</li>'; }).join('');
   }
@@ -505,7 +504,13 @@
     $('#ratings').hidden = false;
   }
 
-  /* Mode « carte à retourner » : on montre simplement le verso */
+  /* Toucher la carte : 1er toucher = découvre le verso (mode « carte à retourner ») ;
+     ensuite chaque toucher la fait tourner (verso ↔ recto) sans changer la notation. */
+  function cardTap() {
+    if (screen !== 'session') return;
+    if (S.phase === 'front') return flipReveal();
+    if (S.phase === 'back' && !S.busy) { $('#card').classList.toggle('flipped'); Sound.flip(); }
+  }
   function flipReveal() {
     if (S.format !== 'flip' || S.phase !== 'front' || screen !== 'session') return;
     S.phase = 'back';
@@ -526,7 +531,7 @@
     $('#choices').hidden = true;
     const card = $('#card');
     fillBack(S.entry);
-    card.classList.add('flipped');
+    card.classList.add('flipped', 'tappable');
     Sound.flip();
 
     const prev = S.combo;
@@ -947,7 +952,7 @@
   $('#btn-sprint-again').onclick = startSprint;
   $('#btn-sprint-home').onclick = function () { $('#sprint-end').hidden = true; show('home'); };
   $('#btn-reveal').onclick = function () { if (S.phase === 'front' && S.format !== 'flip') { S.picked = null; reveal(false); } };
-  $('#card').addEventListener('click', flipReveal);
+  $('#card').addEventListener('click', cardTap);
   $('#ratings').addEventListener('click', function (ev) {
     const b = ev.target.closest('.rate'); if (b) rate(+b.getAttribute('data-r'));
   });
@@ -991,7 +996,8 @@
         // en écrit : Entrée valide (géré par le formulaire)
       } else if (S.phase === 'back') {
         if (k >= '1' && k <= '4') { ev.preventDefault(); rate(+k); }
-        else if (k === 'Enter' || k === ' ') { ev.preventDefault(); rate(S.suggested); }
+        else if (k === ' ') { ev.preventDefault(); cardTap(); }
+        else if (k === 'Enter') { ev.preventDefault(); rate(S.suggested); }
       }
       return;
     }
